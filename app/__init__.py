@@ -10,10 +10,27 @@ app.config.from_object(config)
 # Define the DB
 db = SQLAlchemy(app)
 
-# Handle 404's with style
-@app.errorhandler(404)
-def not_found():
-    return render_template('404.html'), 404
+# Basic site routes
+@app.route('/')
+def index():
+	# future blog posts (add 'posts=posts' for Jinja2 variable)
+    # posts = Blogpost.query.order_by(Blogpost.date_posted.desc()).all()
+
+    return render_template('index.html')
+
+@app.route('/about')
+def about():
+	# Add the about page
+    return render_template('about.html')
+       
+@app.route('/contact')
+def contact():
+	# Add a contact form 
+    return render_template('contact.html')
+
+#
+# Module Imports
+#
 
 # Import the module / component using their blueprints
 from app.mod_auth.controllers import mod_auth as auth_module
