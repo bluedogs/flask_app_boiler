@@ -1,7 +1,8 @@
 # Basic Flask imports
 from flask import Blueprint, request, render_template, \
                     flash, g, session, redirect, url_for
-from werkzeug import check_password_hash, generate_password_hash
+from werkzeug import check_password_hash
+from passlib.hash import sha256_crypt
 
 # import the app
 from app import app, db
@@ -22,21 +23,28 @@ def signin():
             # Check the username
             user = User.query.filter_by(email=request.form['email']).first()
 
-            if user and check_password_hash(user.password, request.form['password']):
+            if user and sha256_crypt.verify(user.password, request.form['password']):
+                session['logged_in'] = True
                 session['username'] = request.form['email']
-                flash('Welcome {0}'.format(request.form['email']))
-                print(user.email)
+                flash('You are now logged in', 'success')
                 return redirect(url_for('home.index'))
+            else:
+                error = 'Invalid login'
+                return render_template('auth/signin.html', error=error, form=form)
             flash('Wrong email or password', 'error-message')
+            error = 'Something went wrong.'
+            return render_template("auth/signin.html", error=error, form=form)
     return render_template("auth/signin.html", form=form)
 
 
 @mod_auth.route('/signup/', methods=['GET', 'POST'])
 def signup():
     form = RegisterForm(request.form)
-
-    # User Login Session
-    if form.validate_on_submit():
+    if request.method == 'POST' and form.validate():
+        name = form.name.data
+        email = form.email.data
+        password = sha256_crypt.encrypt(str(form.password.data))
+        print(name, email, password)
         # Check the email
         if User.query.filter_by(email=form.email.data).first():
             flash('Email already registered, Please use a different email address.', 'error-message')
@@ -44,12 +52,12 @@ def signup():
         if User.query.filter_by(name=form.name.data).first():
             flash('User already registered, Please use a different user.', 'error-message')
 
-        # TODO Hash password before dropping to DB
-        user = User(name=form.name.data, email=form.email.data, password=form.password.data)
+        user = User(name, email, password)
+        print("Added user {0}".format(user.name))
         db.session.add(user)
         db.session.commit()
-        flash('Welcome {0} to the site, please sign in now.'.format(user.name))
-        return redirect(url_for('home.index'))
+        flash('Welcome {0} to the site, please sign in now.'.format(name))
+        return redirect(url_for('.signin'))
 
     return render_template("auth/signup.html", form=form)
 

@@ -1,36 +1,19 @@
 from flask_wtf import FlaskForm
-from wtforms import TextField, PasswordField, BooleanField, StringField
-from wtforms.validators import Required, Email, EqualTo, InputRequired, Length
+from wtforms import StringField, TextField, PasswordField, validators
+
 
 class LoginForm(FlaskForm):
     """ Define the Login Form """
-    email = TextField('Email Address', [Email(),
-            Required(message='Forgot to enter email address?')])
+    email = TextField('Email Address', [validators.Email(),
+            validators.DataRequired(message='Forgot to enter email address?')])
     password = PasswordField('Password', [
-            Required(message='Please supply a password.')])
+            validators.DataRequired(message='Please supply a password.')])
 
 class RegisterForm(FlaskForm):
-
-    name_message = "Your name is too long."
-    email_message = "Your email is too long."
-    pass_message = "Your password is too short (under 8 characters), please choose another."
-    
-    name = StringField('name', 
-        validators=[
-        InputRequired(), 
-        Length(max=64)
-        ]
-        ) 
-    email = StringField('email', 
-        validators=[
-        InputRequired(), 
-        Email(message='Invalid email'), 
-        Length(max=64, message=email_message)
-        ]
-        )
-    password = PasswordField('password', 
-        validators=[
-        InputRequired(), 
-        Length(min=8, message=pass_message)
-        ]
-        )
+    name = StringField('Name', [validators.Length(min=1, max=50)])
+    email = StringField('Email', [validators.Length(min=6, max=50)])
+    password = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords do not match')
+    ])
+    confirm = PasswordField('Confirm Password')
