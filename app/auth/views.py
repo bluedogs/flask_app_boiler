@@ -4,6 +4,9 @@ from flask import Blueprint, request, render_template, \
 from werkzeug import check_password_hash
 from passlib.hash import sha256_crypt
 
+import logging
+logger = logging.getLogger(__name__)
+
 # import the app
 from app import app, db
 # import the auth components
@@ -22,17 +25,20 @@ def signin():
         if form.validate_on_submit():
             # Check the username
             user = User.query.filter_by(email=request.form['email']).first()
-
+            logger.info(user.password)
             if user and sha256_crypt.verify(user.password, request.form['password']):
                 session['logged_in'] = True
                 session['username'] = request.form['email']
                 flash('You are now logged in', 'success')
+                logger.info('You are now logged in')
                 return redirect(url_for('home.index'))
             else:
                 error = 'Invalid login'
+                logger.warning('FORM ERRORS: Invalid login.')
                 return render_template('auth/signin.html', error=error, form=form)
             flash('Wrong email or password', 'error-message')
             error = 'Something went wrong.'
+            logger.warning('FORM ERRORS: Wrong email or password.')
             return render_template("auth/signin.html", error=error, form=form)
     return render_template("auth/signin.html", form=form)
 
@@ -48,12 +54,14 @@ def signup():
         # Check the email
         if User.query.filter_by(email=form.email.data).first():
             flash('Email already registered, Please use a different email address.', 'error-message')
+            logger.warning("Email already registered")
         # Check the username
         if User.query.filter_by(name=form.name.data).first():
             flash('User already registered, Please use a different user.', 'error-message')
-
+            logger.warning("User already registered")
         user = User(name, email, password)
         print("Added user {0}".format(user.name))
+        logger.info("Added user {0}".format(user.name))
         db.session.add(user)
         db.session.commit()
         flash('Welcome {0} to the site, please sign in now.'.format(name))

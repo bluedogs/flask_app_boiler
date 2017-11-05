@@ -1,5 +1,8 @@
 from flask import Blueprint, render_template
 
+import logging
+logger = logging.getLogger(__name__)
+
 home = Blueprint('home', __name__)
 
 # Basic site routes
