@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+  <h1>PROFILE</h1>
+  <p class="lead">content</p>
+</div>
+
+<div class="container">
+
+<h3>Welcome, {{ current_user.name }}</h3>
+
+<ul class="list-group">
+    <li>Name: {{ current_user.name }}</li>
+    <li>Email:  {{ current_user.email }}</li>
+</ul>
+<div class="">
+    <a href="/forgot" class="btn btn-info">
+          <span class="fa fa-key"></span> Reset Password
+    </a>
+</div>
+<p> </p>
+
+<div class="">
+    <a href="/signout" class="btn btn-info">
+          <span class="fa fa-sign-out"></span> Sign out
+    </a>
+</div>
+</div>
+{% endblock %}

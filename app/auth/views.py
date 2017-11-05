@@ -1,8 +1,7 @@
 # Basic Flask imports
-from flask import Blueprint, request, render_template, \
+from flask import Blueprint, render_template, \
                     flash, g, session, redirect, url_for
-from werkzeug import check_password_hash
-from passlib.hash import sha256_crypt
+from flask_login import login_user, logout_user, login_required, current_user
 
 import logging
 logger = logging.getLogger(__name__)
@@ -14,59 +13,81 @@ from app.auth.forms import LoginForm, RegisterForm
 from app.auth.models import User
 
 # define the auth Blueprint
-mod_auth = Blueprint('auth', __name__, url_prefix="/auth")
+auth = Blueprint('auth', __name__)
 
-# Setup the routes
-@mod_auth.route('/signin/', methods=['GET', 'POST'])
-def signin():
-    form = LoginForm()
-    if request.method == "POST":
-        # User Login Session
-        if form.validate_on_submit():
-            # Check the username
-            user = User.query.filter_by(email=request.form['email']).first()
-            logger.info(user.password)
-            if user and sha256_crypt.verify(user.password, request.form['password']):
-                session['logged_in'] = True
-                session['username'] = request.form['email']
-                flash('You are now logged in', 'success')
-                logger.info('You are now logged in')
-                return redirect(url_for('home.index'))
-            else:
-                error = 'Invalid login'
-                logger.warning('FORM ERRORS: Invalid login.')
-                return render_template('auth/signin.html', error=error, form=form)
-            flash('Wrong email or password', 'error-message')
-            error = 'Something went wrong.'
-            logger.warning('FORM ERRORS: Wrong email or password.')
-            return render_template("auth/signin.html", error=error, form=form)
-    return render_template("auth/signin.html", form=form)
-
-
-@mod_auth.route('/signup/', methods=['GET', 'POST'])
+@auth.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = RegisterForm(request.form)
-    if request.method == 'POST' and form.validate():
-        name = form.name.data
-        email = form.email.data
-        password = sha256_crypt.encrypt(str(form.password.data))
-        print(name, email, password)
-        # Check the email
-        if User.query.filter_by(email=form.email.data).first():
-            flash('Email already registered, Please use a different email address.', 'error-message')
-            logger.warning("Email already registered")
-        # Check the username
-        if User.query.filter_by(name=form.name.data).first():
-            flash('User already registered, Please use a different user.', 'error-message')
-            logger.warning("User already registered")
-        user = User(name, email, password)
-        print("Added user {0}".format(user.name))
-        logger.info("Added user {0}".format(user.name))
+    """
+    Handle requests to the /signup route
+    Add an user to the database through the registration form
+    """
+    form = RegisterForm()
+    if form.validate_on_submit():
+        user = User(email=form.email.data,
+                    name=form.name.data,
+                    password=form.password.data)
+
+        # add user to the database
         db.session.add(user)
         db.session.commit()
-        flash('Welcome {0} to the site, please sign in now.'.format(name))
-        return redirect(url_for('.signin'))
+        flash('You have successfully registered! You may now login.')
 
-    return render_template("auth/signup.html", form=form)
+        # redirect to the login page
+        return redirect(url_for('auth.signin'))
 
+    # load registration template
+    return render_template('auth/signup.html', form=form)
 
+@auth.route('/signin', methods=['GET', 'POST'])
+def signin():
+    """
+    Handle requests to the /signin route
+    Log an user in through the signin form
+    """
+    form = LoginForm()
+    if form.validate_on_submit():
+
+        # check whether user exists in the database and whether
+        # the password entered matches the password in the database
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is not None and user.verify_password(form.password.data):
+            # log user in
+            login_user(user)
+
+            # redirect to the dashboard page after login
+            return redirect(url_for('home.index'))
+
+        # when login details are incorrect
+        else:
+            flash('Invalid email or password.')
+
+    # load login template
+    return render_template('auth/signin.html', form=form)
+
+@auth.route('/signout')
+def signout():
+    """
+    Handle requests to the /logout route
+    Log an user out through the logout link
+    """
+    # Redirect users who are not logged in.
+    if not current_user or current_user.is_anonymous:
+        return redirect(url_for('auth.signin'))
+    logout_user()
+    flash('You have successfully been signed out.')
+
+    # redirect to the login page
+    return redirect(url_for('auth.signin'))
+
+@auth.route('/profile')
+def profile():
+
+    # Redirect users who are not logged in.
+    if not current_user or current_user.is_anonymous:
+        return redirect(url_for('auth.signin'))
+    return render_template('auth/profile.html')
+
+@auth.route('/forgot', methods=['GET', 'POST'])
+def forgot():
+
+    return render_template('auth/forgot.html')

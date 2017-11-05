@@ -2,6 +2,7 @@ import logging
 
 from app import app
 
+# Set up logging
 logFormatStr = '[%(asctime)s] p%(process)s {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s'
 logging.basicConfig(format=logFormatStr, filename="global.log", level=logging.DEBUG)
 formatter = logging.Formatter(logFormatStr, '%m-%d %H:%M:%S')
@@ -15,4 +16,4 @@ app.logger.addHandler(fileHandler)
 app.logger.addHandler(streamHandler)
 app.logger.info("Logging is set up.")
 
-app.run(host='0.0.0.0', port=5000, debug=True)
+app.run()

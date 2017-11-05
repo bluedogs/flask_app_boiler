@@ -3,6 +3,8 @@ DEBUG = True
 
 # Name of the app
 APP_NAME = 'app'
+HOST = '127.0.0.1'
+PORT = '5000'
 
 # SQLite DB info
 SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}.db'.format(APP_NAME)
