@@ -6,11 +6,11 @@ from werkzeug import check_password_hash, generate_password_hash
 # import the app
 from app import app, db
 # import the auth components
-from app.mod_auth.forms import LoginForm, RegisterForm
-from app.mod_auth.models import User
+from app.auth.forms import LoginForm, RegisterForm
+from app.auth.models import User
 
 # define the auth Blueprint
-mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
+mod_auth = Blueprint('auth', __name__, url_prefix="/auth")
 
 # Setup the routes
 @mod_auth.route('/signin/', methods=['GET', 'POST'])
@@ -26,7 +26,7 @@ def signin():
                 session['username'] = request.form['email']
                 flash('Welcome {0}'.format(request.form['email']))
                 print(user.email)
-                return redirect("index.html")
+                return redirect(url_for('home.index'))
             flash('Wrong email or password', 'error-message')
     return render_template("auth/signin.html", form=form)
 
@@ -44,11 +44,12 @@ def signup():
         if User.query.filter_by(name=form.name.data).first():
             flash('User already registered, Please use a different user.', 'error-message')
 
+        # TODO Hash password before dropping to DB
         user = User(name=form.name.data, email=form.email.data, password=form.password.data)
         db.session.add(user)
         db.session.commit()
         flash('Welcome {0} to the site, please sign in now.'.format(user.name))
-        return redirect(url_for('index'))
+        return redirect(url_for('home.index'))
 
     return render_template("auth/signup.html", form=form)
 

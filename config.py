@@ -4,12 +4,8 @@ DEBUG = True
 # Name of the app
 APP_NAME = 'app'
 
-# App dir
-import os
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-
 # SQLite DB info
-SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}.{1}.db'.format(BASE_DIR, APP_NAME)
+SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}.db'.format(APP_NAME)
 DATABASE_CONNECTION_OPTIONS = {}
 
 # Threads
