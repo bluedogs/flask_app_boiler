@@ -22,9 +22,9 @@ class User(Base):
     name = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), nullable=False, unique=True)
     password = db.Column(db.String(192), nullable=False)
-    # Roles
-    role = db.Column(db.SmallInteger, nullable=False)
-    status = db.Column(db.SmallInteger, nullable=False)
+    # # Roles
+    # role = db.Column(db.SmallInteger, nullable=False)
+    # status = db.Column(db.SmallInteger, nullable=False)
 
     # New user init
     def __init__(self, name, email, password):
