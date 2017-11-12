@@ -24,18 +24,26 @@ def signup():
     """
     form = RegisterForm()
     if form.validate_on_submit():
+        email = form.email.data
+        # Add a check for specific email domain
+        # dumb trick
+        if email.endswith('@example.com'):
+            user = User(email=form.email.data,
+                        name=form.name.data,
+                        password=form.password.data)
+            user.is_admin = False
 
-        user = User(email=form.email.data,
-                    name=form.name.data,
-                    password=form.password.data)
+            # add user to the database
+            db.session.add(user)
+            db.session.commit()
+            flash('You have successfully registered! You may now login.')
 
-        # add user to the database
-        db.session.add(user)
-        db.session.commit()
-        flash('You have successfully registered! You may now login.')
-
-        # redirect to the login page
-        return redirect(url_for('auth.signin'))
+            # redirect to the login page
+            return redirect(url_for('auth.signin'))
+        else:
+            # redirect to the login page as the email domain does not match
+            flash("Sorry, We are not accepting users at this time.")
+            return redirect(url_for('home.index'))
 
     # load registration template
     return render_template('auth/signup.html', form=form)
