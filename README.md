@@ -27,6 +27,12 @@ _I wrote it for Python 3.6, but it may work in Python 2.7 YMMV_
 
 Open `http://127.0.0.1:5000/` in browser of choice. 
 
+### Use manage.py to work with the system:
+
+- Create the DB
+- `python manage.py create_db`
+- Create an admin user [note: edit manage.py admin user settings]
+- `python manage.py create_admin`
 
 ### DB Operations for firt time use
 
