@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login_manager
 
+
 class Base(db.Model):
     """ Base table template """
 
@@ -64,12 +65,15 @@ class User(UserMixin, Base):
         """
         return check_password_hash(self.password_hash, password)
 
+
 # Set up user_loader
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# TODO implement Roles Later
+
+# TODO implement Useer Roles
+# example:  Admin is able to CRUD other users or data
 class Role(Base):
     """
     Create a Role table

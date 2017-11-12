@@ -4,7 +4,7 @@
       {% if title %}
     <title>{{ title }}</title>
     {% else %}
-    <title>Welcome to My Site</title>
+    <title>Welcome</title>
     {% endif %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,13 +16,13 @@
   <!-- bootswatch CDN, uncomment one link for a different bootswatch theme -->
 
   <!-- Cyborg -->
-  <!-- <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css" rel="stylesheet" integrity="sha384-D9XILkoivXN+bcvB2kSOowkIvIcBbNdoDQvfBNsxYAIieZbx8/SI4NeUvrRGCpDi" crossorigin="anonymous">
- -->
+  <!--<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cyborg/bootstrap.min.css" rel="stylesheet" integrity="sha384-D9XILkoivXN+bcvB2kSOowkIvIcBbNdoDQvfBNsxYAIieZbx8/SI4NeUvrRGCpDi" crossorigin="anonymous">-->
+
   <!-- Darkly -->
-  <!-- <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-S7YMK1xjUjSpEnF4P8hPUcgjXYLZKK3fQW1j5ObLSl787II9p8RO9XUGehRmKsxd" crossorigin="anonymous"> -->
+   <!--<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-S7YMK1xjUjSpEnF4P8hPUcgjXYLZKK3fQW1j5ObLSl787II9p8RO9XUGehRmKsxd" crossorigin="anonymous"> -->
 
   <!-- Flatly -->
-  <!-- <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha384-+ENW/yibaokMnme+vBLnHMphUYxHs34h9lpdbSLuAwGkOKFRl4C34WkjazBtb7eT" crossorigin="anonymous"> -->
+   <!--<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha384-+ENW/yibaokMnme+vBLnHMphUYxHs34h9lpdbSLuAwGkOKFRl4C34WkjazBtb7eT" crossorigin="anonymous"> -->
 
   <script src="https://use.fontawesome.com/b693186513.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -44,7 +44,7 @@ body {
   bottom: 0;
   width: 100%;
   /* Set the fixed height of the footer here */
-  height: 10px;
+  height: 5px;
 
 }
 
@@ -60,28 +60,43 @@ body {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <!-- change to your site name -->
-      <a class="navbar-brand" href="/">My Site</a>
+      <!-- change to your site name or logo-->
+      <a href="/" class="navbar-brand"><img src="../static/img/logo.png" height="20"></a>
+      <!-- <a class="navbar-brand" href="/">My Site</a> -->
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li class="active"><a href="/">Home</a></li>
         <li><a href="/about">About</a></li>
         <li><a href="/contact">Contact</a></li>
-        <li><a href="/profile">Profile</a></li>
+          {% if current_user.name %}
+          <!-- Add links for logged in users here: -->
+        <li><a href="/test">Test</a></li>
+          {% else %}
+
+          {% endif %}
+
         <!-- <li><a href="#"> ADD MORE LINKS </a></li> -->
 
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-          <a href="/signup"><span class="fa fa-user-plus"></span> Sign up</a>
+        {% if current_user.name %}
+          <li>
+          <a href="/profile">{{ current_user.name }}</a>
+        </li>
+          <li>
+          <a href="/signout"><span class="fa fa-sign-out"></span></a>
+        </li>
+          {% else %}
+          <li>
+          <a href="/signup"><span class="fa fa-user-plus"></span></a>
         </li>
         <li>
-          <a href="/signin"><span class="fa fa-sign-in"></span> Sign in</a>
+          <a href="/signin"><span class="fa fa-sign-in"></span></a>
         </li>
-        <li>
-          <a href="/signout"><span class="fa fa-sign-out"></span> Sign out</a>
-        </li>
+          {% endif %}
+
+
       </ul>
     </div>
   </div>
@@ -91,11 +106,8 @@ body {
   <div class="row content">
     <div class="col-sm-2 sidenav">
       <!-- Left Side Nav links -->
-      <!-- remove comment to enable
-      <p><a href="#">Link</a></p>
-      <p><a href="#">Link</a></p>
-      <p><a href="#">Link</a></p>
-    -->
+
+
     </div>
     <!-- Center Content -->
     <div class="col-sm-8 text-left">
@@ -105,24 +117,26 @@ body {
     </div>
     <div class="col-sm-2 sidenav">
       <!-- Right Side Nav links -->
-      <!-- remove comment to enable
+        {% if current_user.name %}
       <div class="well">
-        <p>ADS</p>
+          <p>Signed in User Links</p>
+          <p><a href="/test">Just a test.</a></p>
       </div>
-      <div class="well">
-        <p>ADS</p>
-      </div>
-      -->
+      <!--<div class="well">-->
+        <!--<p>ADS</p>-->
+      <!--</div>-->
+        {% else %}
+        {% endif %}
     </div>
   </div>
 </div>
-  <!-- add footer content here
-    <footer class="footer navbar navbar-inverse">
+
+    <footer class="footer navbar navbar-inverse navbar-fixed-bottom">
 
       <div class="container-fluid">
-        <p class="active">Copyright info, etc.</p>
+        <p class="navbar-brand">Copyright</p>
       </div>
     </footer>
-  -->
+
 </body>
 </html>

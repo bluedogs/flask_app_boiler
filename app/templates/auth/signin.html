@@ -1,8 +1,11 @@
-
+{% import "bootstrap/utils.html" as utils %}
 {% extends "base.html" %}
 {% block content %}
     <h1>SIGN IN</h1>
 
+  <br/>
+  {{ utils.flashed_messages() }}
+  <br/>
 
 <form method="POST">
     <div class="form-group">

@@ -7,9 +7,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 # import the app
-from app import app, db
+from app import db
+
 # import the auth components
-from app.auth.forms import LoginForm, RegisterForm
+from app.auth.forms import LoginForm, RegisterForm, ResetPasswordForm
 from app.auth.models import User
 
 # define the auth Blueprint
@@ -23,6 +24,7 @@ def signup():
     """
     form = RegisterForm()
     if form.validate_on_submit():
+
         user = User(email=form.email.data,
                     name=form.name.data,
                     password=form.password.data)
@@ -91,3 +93,37 @@ def profile():
 def forgot():
 
     return render_template('auth/forgot.html')
+
+
+@auth.route('/passwordreset', methods=['GET', 'POST'])
+def passwordreset():
+    """
+    Handle requests to the /passwordreset route
+    Update users password
+    """
+
+    # Redirect users who are not logged in.
+    if not current_user or current_user.is_anonymous:
+        return redirect(url_for('auth.signin'))
+
+    form = ResetPasswordForm()
+
+    if form.validate_on_submit():
+
+        user = User.query.filter_by(email=form.email.data).first()
+
+        user.password = form.password.data
+
+        # add user to the database
+        db.session.add(user)
+        db.session.commit()
+
+        logout_user()
+
+        flash('You have successfully reset your password. Please signin.')
+
+        # redirect to the login page
+        return redirect(url_for('auth.signin'))
+
+    return render_template('auth/reset.html', form=form)
+
