@@ -19,7 +19,7 @@ _I wrote it for Python 3.6, but it may work in Python 2.7 YMMV_
 
 - `git clone https://github.com/spdz/flask_app_boiler.git`
 - `cd flask_app_boiler`
-- `pip install requirements.txt`
+- `pip install -r requirements.txt`
 - `virtualenv -p python3 .`
 - `export FLASK_APP=run.py`
 - `export FLASK_CONFIG=development`
