@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    
+      <!-- change to your site name or logo-->
+      <a class="navbar-brand" href="/"><img src="../static/img/logo.png" height="20">
+      Graphy!</a>    
+    </div>
+    <div class="collapse navbar-collapse" id="main-nav">
+      <ul class="nav navbar-nav ml-xl-5">
+        <li class="nav-item">
+          <a href="/" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item"><a href="/about" class="nav-link">About</a></li>
+        <li class="nav-item"><a href="/contact" class="nav-link">Contact</a></li>
+        {% if current_user.name %}
+          <!-- Add links for logged in users here: -->
+          <li class="nav-item dropdown"><a href="/test" class="nav-link">Test</a></li>
+        {% else %}
+
+        {% endif %}
+      </ul>
+      <ul class="nav navbar-nav ml-auto">
+        {% if current_user.name %}
+          <li class="nav-item">
+          <a href="/profile"  class="nav-link">{{ current_user.name }}</a>
+        </li>
+          <li class="nav-item">
+          <a href="/signout"  class="nav-link"><span class="fa fa-sign-out"></span></a>
+        </li>
+          {% else %}
+          <li class="nav-item">
+          <a href="/signup" class="nav-link"><span class="fa fa-user-plus"></span></a>
+        </li>
+        <li class="nav-item">
+          <a href="/signin"  class="nav-link"><span class="fa fa-sign-in"></span></a>
+        </li>
+          {% endif %}
+
+
+      </ul>
+    </div>
+  </div>
+</nav>

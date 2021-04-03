@@ -2,8 +2,10 @@
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from flask_bootstrap import Bootstrap
 from flask_migrate import Migrate
+from flask_bootstrap import Bootstrap
+from flaskext.markdown import Markdown
+from .api import api_bp as api
 
 import logging
 
@@ -12,6 +14,10 @@ from config import app_config
 
 # Define the DB
 db = SQLAlchemy()
+migrate = Migrate()
+
+# Markdown object created
+md = []
 
 # Add Models from other Blueprints
 # This is helps the command 'flask db migrate' to find your new tables
@@ -23,7 +29,7 @@ login_manager = LoginManager()
 
 
 def create_app(config_name):
-
+    global md
     # Define the App
     app = Flask(__name__)
     app.config.from_object(app_config[config_name])
@@ -32,6 +38,7 @@ def create_app(config_name):
     Bootstrap(app)
     db.init_app(app)
     login_manager.init_app(app)
+    md = Markdown(app)
 
     # Migrate DB to fix any changes
     migrate = Migrate(app, db)
@@ -47,6 +54,7 @@ def create_app(config_name):
     # Register Blueprints
     app.register_blueprint(home)
     app.register_blueprint(auth)
+    app.register_blueprint(api)
 
     # app.register_blueprint(random_module)
 

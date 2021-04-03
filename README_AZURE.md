@@ -45,7 +45,7 @@ Open `http://127.0.0.1:5000/` in browser of choice.
 
 
 Originally uploaded to my github repo:
-https://github.com/spdz/flask_app_boiler
+https://github.com/bluedogs/flask_app_boiler
 
 luanch.json edit,
 ```
