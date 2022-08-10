@@ -19,8 +19,10 @@ _I wrote it for Python 3.6, but it may work in Python 2.7 YMMV_
 
 - `git clone https://github.com/spdz/flask_app_boiler.git`
 - `cd flask_app_boiler`
-- `virtualenv -p python3 .`
-- `pip-upgrade requirements.txt`
+- `virtualenv -p python3 venv`
+- `source venv/bin/activate`
+- `pip install -r requirements.txt`
+
 - `export FLASK_APP=run.py`
 - `export FLASK_CONFIG=development`
 - `flask run`
@@ -42,8 +44,4 @@ Open `http://127.0.0.1:5000/` in browser of choice.
 - `flask db migrate`
 - DB Upgrades
 - `flask db upgrade`
-
-
-Originally uploaded to my github repo:
-https://github.com/bluedogs/flask_app_boiler
 

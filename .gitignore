@@ -130,7 +130,8 @@ dmypy.json
 !.vscode/extensions.json
 
 # Other Fun
-.DS_Store/
+.DS_Store
+*/.DS_Store
 
 #nettool settings
 settings.cfg
